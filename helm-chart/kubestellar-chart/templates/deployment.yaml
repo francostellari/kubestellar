@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.basename }}-server
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.basename }}-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.basename }}-server
+    spec:
+      volumes:
+      - name: {{ .Values.basename }}-pv
+        persistentVolumeClaim:
+          claimName: {{ .Values.basename }}-pvc
+      containers:
+      - name: {{ .Values.basename }}-server
+        image: quay.io/kubestellar/kubestellar:stable
+        volumeMounts:
+        - name: {{ .Values.basename }}-pv
+          mountPath: {{ .Values.mountPath }}
+          readOnly: false

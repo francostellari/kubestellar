@@ -1,0 +1,15 @@
+# Default values for kubestellar-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+basename: kubestellar
+
+namespace: kubestellar
+
+image:
+  repository: quay.io/kubestellar/kubestellar
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+
+storage: 1Mi
+mountPath: "/.kcp"

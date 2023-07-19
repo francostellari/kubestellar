@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubestellar-client
+  namespace: kubestellar
+spec:
+  selector:
+    matchLabels:
+      app: kubestellar-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubestellar-client
+    spec:
+      volumes:
+      - name: kubestellar-pv
+        persistentVolumeClaim:
+          claimName: kubestellar-pvc
+      containers:
+      - name: kubestellar-client
+        image: quay.io/kubestellar/kubestellar:stable
+        volumeMounts:
+        - name: kubestellar-pv
+          mountPath: "/.kcp"
+          readOnly: false
+        command: [ "/bin/bash" ]
+        args:
+          - -c
+          - >-
+              echo Sleeping
+              && sleep 100000
