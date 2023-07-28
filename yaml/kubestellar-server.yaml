@@ -1,12 +1,9 @@
-# kubectl exec -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-client -o jsonpath={.items[0].metadata.name}) -- kubectl ws .
-# kubectl exec -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}) -- cat /.kcp/admin.kubeconfig
-# kubectl cp  -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}):/.kcp/admin.kubeconfig ./admin.kubeconfig
-# kubectl port-forward -n kubestellar pod/$(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}) 6443:6443 --address='0.0.0.0'
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: kubestellar
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -19,6 +16,7 @@ spec:
   resources:
     requests:
       storage: 1Mi
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,10 +40,16 @@ spec:
       containers:
       - name: kubestellar-server
         image: quay.io/kubestellar/kubestellar:stable
+        imagePullPolicy: Always # IfNotPresent
         volumeMounts:
         - name: kubestellar-pv
           mountPath: "/.kcp"
           readOnly: false
+        ports:
+        - name: ks-port
+          protocol: TCP
+          containerPort: 6443
+
 ---
 kind: Service
 apiVersion: v1
@@ -56,38 +60,30 @@ spec:
   selector:
     app: kubestellar-server
   ports:
-    - port: 6443 # Default port for image
-      targetPort: 6443
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: kubestellar-client
-#   namespace: kubestellar
-# spec:
-#   selector:
-#     matchLabels:
-#       app: kubestellar-client
-#   replicas: 1
-#   template:
-#     metadata:
-#       labels:
-#         app: kubestellar-client
-#     spec:
-#       volumes:
-#       - name: kubestellar-pv
-#         persistentVolumeClaim:
-#           claimName: kubestellar-pvc
-#       containers:
-#       - name: kubestellar-server
-#         image: quay.io/kubestellar/kubestellar:stable
-#         volumeMounts:
-#         - name: kubestellar-pv
-#           mountPath: "/.kcp"
-#           readOnly: false
-#         command: [ "/bin/bash" ]
-#         args:
-#           - -c
-#           - >-
-#               echo Sleeping
-#               && sleep 100000
+    - protocol: TCP
+      port: 6443 # Default port for image
+      targetPort: ks-port
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    kubernetes.io/ingress.class: nginx
+  name: kubestellar-ingress
+  namespace: kubestellar
+spec:
+  rules:
+  - host: kubestellar.svc.cluster.local
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: kubestellar-service
+            port:
+              number: 6443
