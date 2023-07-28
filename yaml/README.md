@@ -9,26 +9,58 @@ Table of contests:
 
 ## Deploy **KubeStellar** in a Kind cluster
 
-Start a **Kind** cluster:
+Create a **Kind** cluster with the `extraPortMappings` for ports `80` and `443`:
 
 ```shell
-$ kind create cluster
+kind create cluster --config=- <<EOF
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+EOF
 ```
 
-Deploy **KubeStellar** `stable` in `kubestellar` namespace
+Create an `nginx-ingress` with SSL passthrough using the YAML file [kind-nginx-ingress-with-SSL-passthrough.yaml](./kind-nginx-ingress-with-SSL-passthrough.yaml):
 
 ```shell
-$ kubectl apply -f kubestellar-server.yaml
-namespace/kubestellar created
-persistentvolumeclaim/kubestellar-pvc created
-deployment.apps/kubestellar-server created
+kubectl apply -f kind-nginx-ingress-with-SSL-passthrough.yaml
+```
+
+Wait for the ingress to be ready:
+
+```shell
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=90s
+```
+
+Deploy **KubeStellar** `stable` in a `kubestellar` namespace:
+
+```shell
+kubectl apply -f kubestellar-server.yaml
 ```
 
 Wait for **KubeStellar** to be ready:
 
 ```shell
-$ kubectl logs -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name})
+kubectl logs -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name})
+```
 
+```text
 < Starting Kubestellar container >-------------------------
 < Starting kcp >-------------------------------------------
 Running kcp... pid= logfile=/kubestellar-logs/kcp.log
@@ -92,16 +124,16 @@ export PATH=$PATH:$PWD
 
 ```
 
-Setup port forwarding to the `kubestellar-server` pod:
+Add the **KubeStellar** ingress `kubestellar.svc.cluster.local` to the `/etc/hosts` files:
 
-```shell
-kubectl port-forward -n kubestellar pod/$(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}) 6443:6443 --address='0.0.0.0'
+```text
+127.0.0.1       kubestellar.svc.cluster.local
 ```
 
 Edit the `admin.kubeconfig`, for each cluster entry:
 
 1. add `insecure-skip-tls-verify: true`
-2. change the server url to something like `https://127.0.0.1:6443` (or the public ip of the host OS)
+2. change the server url to something like `https://kubestellar.svc.cluster.local`
 3. remove the `certificate-authority-data` line
 
 Now we can use use **KubeStellar** in the usual way:
@@ -119,7 +151,7 @@ $ kubectl ws tree
 ## Access **KubeStellar** service from another pod in the same `kubestellar` namespace
 
 Any pod in the same namespace can access **KubeStellar** by mounting the PVC with the `admin.kubeconfig`.
-Obviously `kubectl`, **kcp** plugins, and **KubeStellar** exacutables are also needed.
+Obviously `kubectl`, **kcp** plugins, and **KubeStellar** executables are also needed.
 
 In this example we create a `kubestellar-client` pod based on the same image of `kubestellar-server` since it already contains the required executables listed above:
 
