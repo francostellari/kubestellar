@@ -78,7 +78,7 @@ Several arguments can be used to customize the build:
 
 - `KUBESTELLAR_VERSION=<version>` is used to determine the version of **KubeStellar** being installed in the container image, *e.g.* `v0.3.1`. In the argument is not specified, it will default to the **stable** **KubeStellar** release version specified in https://github.com/kubestellar/kubestellar/blob/main/VERSION.
 - `TAG=<tag>` is used to determine the tag of the container image, *e.g.* `stable`. In the argument is not specified, it will default to the value set by `KUBESTELLAR_VERSION`.
-- `PLATFORMS` lists the desired target platforms. Default value; `PLATFORMS=linux/amd64,linux/arm64,linux/ppc64le`. It should be noted that a `linux/s390x` **KubeStellar**  cannot be build because **kcp** does not have a `linux/s390x` binary release.
+- `PLATFORMS` lists the desired target platforms. Default value: `PLATFORMS=linux/amd64,linux/arm64,linux/ppc64le`. It should be noted that a `linux/s390x` **KubeStellar**  cannot be build because **kcp** does not have a `linux/s390x` binary release.
 
 As an example, the **KubeStellar** container images available at https://quay.io/repository/kubestellar/kubestellar?tab=tags have been built with commands like:
 
@@ -93,7 +93,7 @@ Spin up a local or remote container image with the command:
 ```shell
 make run
 export KUBECONFIG=${HOME}/.kcp/admin.kubeconfig
-export PATH=$PATH:${HOME}/kcp:${HOME}/kubestellar/bin
+export PATH=$PATH:${HOME}/kcp:${HOME}/kubestellar
 ```
 
 The following arguments can be used:
@@ -105,8 +105,7 @@ The following arguments can be used:
 
 The command above will:
 
-- mount on the host filesystem a `${BASEPATH}/.kcp` folder containing the `admin-kubeconfig` file
-- mount on the host filesystem a `${BASEPATH}/.kubestellar-logs` folder containing the log files of **kcp** and **KubeStellar** controllers
+- create a `${BASEPATH}/.kcp` folder containing a copy of the `admin-kubeconfig` file
 - create a `${BASEPATH}/kcp` folder containing a copy of **kcp** plugins for the host OS architecture
 - create a `${BASEPATH}/kubestellar` folder containing a copy of **KubeStellar** executables for the host OS architecture
 

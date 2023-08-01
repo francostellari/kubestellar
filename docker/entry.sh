@@ -18,19 +18,26 @@ echo -e
 
 echo "< Starting Kubestellar container >-------------------------"
 
-# mkdir -p /kubestellar-logs
-# chown -R $USER:$USER .kcp logs
+# Create the certificates
+if [ -n "$EXTERNAL_HOSTNAME" ] && [ ! -d "${PWD}/pki" ]; then
+    echo "< Creating the TLS certificate >---------------------------"
+    eval pieces=($(kubestellar-ensure-kcp-server-creds ${EXTERNAL_HOSTNAME}))
+    echo "Server=${EXTERNAL_HOSTNAME}"
+    echo ${pieces[0]}
+    echo ${pieces[1]}
+    echo ${pieces[2]}
+fi
 
 # Start kcp
 echo "< Starting kcp >-------------------------------------------"
 
 echo -n "Running kcp... "
-if [ -z "$EXTERNAL_HOSTNAME" ]; then
-    kcp start &>> /kubestellar-logs/kcp.log &
+if [ -n "$EXTERNAL_HOSTNAME" ] && [ ! -d "${PWD}/pki" ]; then
+    kcp start --tls-sni-cert-key ${pieces[1]},${pieces[2]} &>> "${PWD}/kubestellar-logs/kcp.log" &
 else
-    kcp start --external-hostname "$EXTERNAL_HOSTNAME" &>> /kubestellar-logs/kcp.log &
+    kcp start &>> "${PWD}/kubestellar-logs/kcp.log" &
 fi
-echo "logfile=/kubestellar-logs/kcp.log"
+echo "logfile=./kubestellar-logs/kcp.log"
 
 echo "Waiting for kcp to be ready... it may take a while"
 until [ "$(kubectl ws root:compute 2> /dev/null)" != "" ]
@@ -42,12 +49,40 @@ echo "kcp version: $(kubectl version --short 2> /dev/null | grep kcp | sed 's/.*
 
 kubectl ws root
 
+if [ -n "$EXTERNAL_HOSTNAME" ] && [ ! -d "${PWD}/.kcp-${EXTERNAL_HOSTNAME}" ]; then
+    echo "Switching the admin.kubeconfig domain to ${EXTERNAL_HOSTNAME}..."
+    switch-domain .kcp admin.kubeconfig root ${EXTERNAL_HOSTNAME} ${EXTERNAL_PORT} ${pieces[0]}
+fi
 
 # Starting KubeStellar
 echo "< Starting KubeStellar >-----------------------------------"
 
 kubestellar start
 
-# Sleep forerver
+# Create secrets in Kuberntes cluster
+echo "< Create secrets >-----------------------------------------"
+
+export KUBECONFIG=
+
+echo "Ensure secret in the curent namespace..."
+if kubectl get secret kubestellar &> /dev/null; then
+    kubectl delete secret kubestellar
+fi
+kubectl create secret generic kubestellar --from-file="${PWD}/.kcp-${EXTERNAL_HOSTNAME}/admin.kubeconfig"
+
+if [ -n "${SECRET_NAMESPACES}" ]; then
+    IFS=',' read -ra ns_array <<< "${SECRET_NAMESPACES}"
+    for ns in "${ns_array[@]}"
+    do
+        echo "Ensure secret in namespace \"${ns}\"..."
+        if kubectl get secret kubestellar -n ${ns} &> /dev/null; then
+            kubectl delete secret kubestellar -n ${ns}
+        fi
+        kubectl create secret generic kubestellar -n ${ns} --from-file="${PWD}/.kcp-${EXTERNAL_HOSTNAME}/admin.kubeconfig"
+    done
+fi
+
+# Done, sleep forerver...
+touch ready
 echo "Ready!"
 sleep infinity

@@ -24,56 +24,72 @@ ARG KUBESTELLAR_VERSION
 
 WORKDIR /
 
-# download kubectl binaries
-RUN curl -SL -o kubectl "https://dl.k8s.io/release/v1.25.3/bin/${TARGETPLATFORM}/kubectl" && \
-    chmod 0755 kubectl
+# Download YQ
+RUN curl -SL -o yq "https://github.com/mikefarah/yq/releases/latest/download/yq_${TARGETOS}_${TARGETARCH}" && \
+    chmod +x yq
 
-# download kcp binaries
+# Download kubectl binaries
+RUN curl -SL -o kubectl "https://dl.k8s.io/release/v1.25.3/bin/${TARGETPLATFORM}/kubectl" && \
+    chmod +x kubectl
+
+# Download EasyRSA
+RUN curl -SL -o easy-rsa.tar.gz "https://github.com/OpenVPN/easy-rsa/releases/download/v3.1.5/EasyRSA-3.1.5.tgz" && \
+    mkdir easy-rsa && \
+    tar -C easy-rsa -zxf easy-rsa.tar.gz --wildcards --strip-components=1 EasyRSA*/*
+
+# Download kcp binaries
 RUN curl -SL -o kcp.tar.gz "https://github.com/kcp-dev/kcp/releases/download/v0.11.0/kcp_0.11.0_${TARGETOS}_${TARGETARCH}.tar.gz" && \
     mkdir kcp && \
     tar -C kcp -zxf kcp.tar.gz
 
-# download kcp plugins
+# Download kcp plugins
 RUN curl -SL -o kcp-plugins.tar.gz "https://github.com/kcp-dev/kcp/releases/download/v0.11.0/kubectl-kcp-plugin_0.11.0_${TARGETOS}_${TARGETARCH}.tar.gz" && \
     mkdir kcp-plugins && \
     tar -C kcp-plugins -zxf kcp-plugins.tar.gz
 
-# download KubeStellar binaries
+# Download KubeStellar binaries
 RUN curl -SL -o kubestellar.tar.gz "https://github.com/kubestellar/kubestellar/releases/download/${KUBESTELLAR_VERSION}/kubestellar_${KUBESTELLAR_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz" && \
     mkdir kubestellar && \
     tar -C kubestellar -zxf kubestellar.tar.gz
+
 
 ###############################################################################
 # KubeStellar image
 ###############################################################################
 FROM redhat/ubi9
 
-# install requirements (for running inside the container)
-RUN yum install -y jq procps && \
+# Install requirements (for running inside the container)
+RUN dnf install -y jq procps && \
     groupadd kubestellar && \
     adduser -g kubestellar kubestellar && \
-    mkdir -p /.kcp /kubestellar-logs && \
-    chown -R kubestellar:kubestellar /.kcp /kubestellar-logs
+    mkdir -p /kubestellar/home/.kcp /kubestellar/home/kubestellar-logs && \
+    chown -R kubestellar:kubestellar /kubestellar
 
-WORKDIR /
+# Copy binaries from the builder image
+COPY --from=builder /kubectl     /usr/local/bin/kubectl
+COPY --from=builder /yq          /usr/local/bin/yq
+COPY --from=builder /kcp         /kubestellar/kcp
+COPY --from=builder /kcp-plugins /kubestellar/kcp-plugins
+COPY --from=builder /kubestellar /kubestellar/kubestellar
+COPY --from=builder /easy-rsa    /kubestellar/easy-rsa
 
-# copy binaries from the builder image
-COPY --from=builder /kubectl         /usr/local/bin/kubectl
-COPY --from=builder /kcp/bin         /kcp
-COPY --from=builder /kcp-plugins/bin /kcp-plugins
-COPY --from=builder /kubestellar     /kubestellar
+# Add entry script
+ADD entry.sh                     /kubestellar/entry.sh
+ADD tls-scripts                  /kubestellar/tls-scripts
 
-# add entry script
-ADD entry.sh /entry.sh
+# List volumes of ineterest
+VOLUME [ "/kubestellar/home/.kcp" , "/kubestellar/home/kubestellar-logs" , "/kubestellar/kcp" , "/kubestellar/kcp-plugins" , "/kubestellar/kubestellar" ]
 
-VOLUME [ "/.kcp", "/kubestellar-logs", "/kcp", "/kcp-plugins", "/kubestellar"]
-
-USER kubestellar
-
-# setup the environment variables
-ENV PATH=$PATH:/kcp:/kcp-plugins:/kubestellar/bin
-ENV KUBECONFIG=/.kcp/admin.kubeconfig
+# Setup the environment variables
+ENV PATH=$PATH:/kubestellar/easy-rsa:/kubestellar/kcp/bin:/kubestellar/kcp-plugins/bin:/kubestellar/kubestellar/bin:/kubestellar/tls-scripts
+ENV KUBECONFIG=/kubestellar/home/.kcp/admin.kubeconfig
 ENV EXTERNAL_HOSTNAME=""
+ENV EXTERNAL_PORT=""
+ENV SECRET_NAMESPACES=""
+
+# Switch the user
+USER kubestellar
+WORKDIR /kubestellar/home
 
 # start KubeStellar
-CMD [ "/entry.sh" ]
+CMD [ "/kubestellar/entry.sh" ]
