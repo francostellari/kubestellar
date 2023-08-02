@@ -133,6 +133,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: kubestellar-route
+  namespace: kubestellar
 spec:
   host: kubestellar.svc.cluster.local
   port:
