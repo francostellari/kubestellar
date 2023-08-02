@@ -3,9 +3,9 @@
 Table of contests:
 - [Deploy **KubeStellar** service in a Kind cluster](#deploy-kubestellar-service-in-a-kind-cluster)
   - [Deploy **KubeStellar** in a Kind cluster](#deploy-kubestellar-in-a-kind-cluster)
-  - [Access **KubeStellar** service directly from the host without KUBECONFIG or executables](#access-kubestellar-service-directly-from-the-host-without-kubeconfig-or-executables)
-  - [Access **KubeStellar** service from the host](#access-kubestellar-service-from-the-host)
-  - [Access **KubeStellar** service from another pod in the same `kubestellar` namespace](#access-kubestellar-service-from-another-pod-in-the-same-kubestellar-namespace)
+  - [Access **KubeStellar** service directly from the host OS without `admin.kubeconfig` or plugins](#access-kubestellar-service-directly-from-the-host-os-without-adminkubeconfig-or-plugins)
+  - [Access **KubeStellar** service from the host OS by extracting the `admin.kubeconfig` and the plugins from the pod](#access-kubestellar-service-from-the-host-os-by-extracting-the-adminkubeconfig-and-the-plugins-from-the-pod)
+  - [Access **KubeStellar** from another pod in the same `kubestellar` namespace](#access-kubestellar-from-another-pod-in-the-same-kubestellar-namespace)
 
 ## Deploy **KubeStellar** in a Kind cluster
 
@@ -54,6 +54,25 @@ Deploy **KubeStellar** `stable` in a `kubestellar` namespace:
 kubectl apply -f kubestellar-server.yaml
 ```
 
+Note that three environment variables are available for the **KubeStellar** deployment container:
+
+- `EXTERNAL_HOSTNAME`: set the external domain/url to be used to reach **KubeStellar**. This value will be included in the `admin.kubeconfig`. By default, it is set to the hostname in the ingress rule: `kubestellar.svc.cluster.local`.
+- `EXTERNAL_PORT`: set the port to be used to reach **KubeStellar**. This value will be included in the `admin.kubeconfig`. By default, it is set to the ingress port `443`.
+- `SECRET_NAMESPACES`: can optionally be used to create the `kubestellar` secrect containing the `admin.kuneconfig` into a comma-separated list of specified namespaces, besides the `kubestellar` namespace.
+
+As a result of the above command, the following objects will be created:
+
+```text
+namespace/kubestellar created
+persistentvolumeclaim/kubestellar-pvc created
+serviceaccount/kubestellar-service-account created
+clusterrole.rbac.authorization.k8s.io/kubestellar-role created
+clusterrolebinding.rbac.authorization.k8s.io/kubestellar-role-binding created
+deployment.apps/kubestellar-server created
+service/kubestellar-service created
+ingress.networking.k8s.io/kubestellar-ingress create
+```
+
 Wait for **KubeStellar** to be ready:
 
 ```shell
@@ -62,11 +81,83 @@ kubectl logs -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kube
 
 ```text
 < Starting Kubestellar container >-------------------------
+< Creating the TLS certificate >---------------------------
+
+Notice
+------
+'init-pki' complete; you may now create a CA or requests.
+
+Your newly created PKI dir is:
+* /kubestellar/pki
+
+* Using Easy-RSA configuration: Not found
+
+* IMPORTANT: Easy-RSA 'vars' template file has been created in your new PKI.
+             Edit this 'vars' file to customise the settings for your PKI.
+             To use a global vars file, use global option --vars=<YOUR_VARS>
+
+* Using x509-types directory: /kubestellar/easy-rsa/x509-types
+
+
+* Using Easy-RSA configuration:
+  /kubestellar/pki/vars
+
+* Using SSL: openssl OpenSSL 3.0.7 1 Nov 2022 (Library: OpenSSL 3.0.7 1 Nov 2022)
+
+Using configuration from /kubestellar/pki/69afc467/temp.5.1
+....+...+..+....+.....+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*......+..+...+...+......+...+.......+.....+.+........+....+..+...+.+.........+...........+.........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.+.....+.+.....+.+..............+.+.....+.......+..+......+............+.......+...............+.........+............+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+.+.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*...+.........+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*.........+.....+..........+..+....+......+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+-----
+
+Notice
+------
+CA creation complete. Your new CA certificate is at:
+* /kubestellar/pki/ca.crt
+
+
+* Using Easy-RSA configuration:
+  /kubestellar/pki/vars
+
+* Using SSL: openssl OpenSSL 3.0.7 1 Nov 2022 (Library: OpenSSL 3.0.7 1 Nov 2022)
+
+-----
+
+Notice
+------
+Keypair and certificate request completed. Your files are:
+* req: /kubestellar/pki/reqs/kcp-server.req
+* key: /kubestellar/pki/private/kcp-server.key
+
+Using configuration from /kubestellar/pki/0525cd36/temp.5.1
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'kcp-server'
+Certificate is to be certified until Dec 16 21:39:38 2050 GMT (10000 days)
+
+Write out database with 1 new entries
+Data Base Updated
+
+Notice
+------
+Certificate created at:
+* /kubestellar/pki/issued/kcp-server.crt
+
+Notice
+------
+Inline file created:
+* /kubestellar/pki/inline/kcp-server.inline
+
+Server=kubestellar.svc.cluster.local
+/kubestellar/pki/ca.crt
+/kubestellar/pki/issued/kcp-server.crt
+/kubestellar/pki/private/kcp-server.key
 < Starting kcp >-------------------------------------------
-Running kcp... pid= logfile=/kubestellar-logs/kcp.log
+Running kcp... logfile=./kubestellar-logs/kcp.log
 Waiting for kcp to be ready... it may take a while
 kcp version: v0.11.0
 Current workspace is "root".
+Switching the admin.kubeconfig domain to kubestellar.svc.cluster.local...
 < Starting KubeStellar >-----------------------------------
 Finished augmenting root:compute for KubeStellar
 Workspace "espw" (type root:organization) created. Waiting for it to be ready...
@@ -76,17 +167,38 @@ Finished populating the espw with kubestellar apiexports
 ****************************************
 Launching KubeStellar ...
 ****************************************
- mailbox-controller is running (log file: //kubestellar-logs/mailbox-controller-log.txt)
- where-resolver is running (log file: //kubestellar-logs/kubestellar-where-resolver-log.txt)
- placement translator is running (log file: //kubestellar-logs/placement-translator-log.txt)
+ mailbox-controller is running (log file: /kubestellar/kubestellar-logs/mailbox-controller-log.txt)
+ where-resolver is running (log file: /kubestellar/kubestellar-logs/kubestellar-where-resolver-log.txt)
+ placement translator is running (log file: /kubestellar/kubestellar-logs/placement-translator-log.txt)
 ****************************************
 Finished launching KubeStellar ...
 ****************************************
 Current workspace is "root".
+< Create secrets >-----------------------------------------
+Ensure secret in the curent namespace...
+secret/kubestellar created
+Ensure secret in namespace "default"...
+secret "kubestellar" deleted
+secret/kubestellar created
 Ready!
 ```
 
-## Access **KubeStellar** service directly from the host without KUBECONFIG or executables
+Note that alternatively, one can wait for the `kubestellar` secret to be created.
+
+```shell
+until kubectl logs -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}) 2>&1 | grep -Fxq "Ready!"
+do
+  sleep 1
+done
+```
+
+After the deployment has completed, **KubeStellar** `admin.kubeconfig` can be in three ways:
+
+- the `kubestellar` secret in the `kubestellar` namespace or any other namespace listed in `SECRET_NAMESPACES` environment variable;
+- the persistent volume claim `kubestellar-pvc` in the `kubestellar` namespace;
+- directly from the `kubestellar` pod in the `kubestellar` namespace at the location `/kubestellar/home/.kcp-kubestellar.svc.cluster.local/admin.kubeconfig`.
+
+## Access **KubeStellar** service directly from the host OS without `admin.kubeconfig` or plugins
 
 Since **kubectl**, **kcp** plugins, and **KubeStellar** executables are include in the **KubeStellar** container image we can operate KubeStellar directly from the host OS using `kubectl`, for example:
 
@@ -102,39 +214,26 @@ Workspace "imw" (type root:organization) created. Waiting for it to be ready...
 Workspace "imw" (type root:organization) is ready to use.
 ```
 
-## Access **KubeStellar** service from the host
+## Access **KubeStellar** service from the host OS by extracting the `admin.kubeconfig` and the plugins from the pod
 
-In this case the host OS will need a copy of **kcp** `admin.kubeconfig`, **kcp** plugins, and **KubeStellar** binaries:
+In this case the host OS will need a copy of **kcp** `admin.kubeconfig`, **kcp** plugins, and **KubeStellar** plugins:
 
 ```shell
+kubectl exec -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}) -- tar cf - "/kubestellar/kcp-plugins/bin" | tar xf - --strip-components=3
 
-kubectl cp -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}):/.kcp/admin.kubeconfig ./admin.kubeconfig
+kubectl exec -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}) -- tar cf - "/kubestellar/kubestellar/bin" | tar xf - --strip-components=3
 
-kubectl cp -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}):/kcp-plugins .
-
-ln -s kubectl-workspace kubectl-ws
-ln -s kubectl-workspace kubectl-workspaces
-
-kubectl cp -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}):/kubestellar/bin .
-
-chmod +x *
+kubectl cp -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-server -o jsonpath={.items[0].metadata.name}):/kubestellar/home/.kcp-kubestellar.svc.cluster.local/admin.kubeconfig ./admin.kubeconfig
 
 export KUBECONFIG=$PWD/admin.kubeconfig
 export PATH=$PATH:$PWD
-
 ```
 
-Add the **KubeStellar** ingress `kubestellar.svc.cluster.local` to the `/etc/hosts` files:
+Then add the **KubeStellar** ingress `kubestellar.svc.cluster.local` to the `/etc/hosts` files:
 
 ```text
 127.0.0.1       kubestellar.svc.cluster.local
 ```
-
-Edit the `admin.kubeconfig`, for each cluster entry:
-
-1. add `insecure-skip-tls-verify: true`
-2. change the server url to something like `https://kubestellar.svc.cluster.local`
-3. remove the `certificate-authority-data` line
 
 Now we can use use **KubeStellar** in the usual way:
 
@@ -143,17 +242,20 @@ $ kubectl ws tree
 .
 └── root
     ├── compute
-    ├── espw
-    │   └── 1787fno3dx2oin4h-mb-00b49918-368b-47c8-8782-fa82dffbdc23
-    └── imw
+    └── espw
 ```
 
-## Access **KubeStellar** service from another pod in the same `kubestellar` namespace
+## Access **KubeStellar** from another pod in the same `kubestellar` namespace
 
-Any pod in the same namespace can access **KubeStellar** by mounting the PVC with the `admin.kubeconfig`.
+Any pod in the same namespace can access **KubeStellar** by retrieving the `admin.kubeconfig` via one of the following ways:
+
+- the `kubestellar` secret in the `kubestellar` namespace or any other namespace listed in `SECRET_NAMESPACES` environment variable;
+- the persistent volume claim `kubestellar-pvc` in the `kubestellar` namespace;
+- directly from the `kubestellar` pod in the `kubestellar` namespace at the location `/kubestellar/.kcp-kubestellar.svc.cluster.local/admin.kubeconfig`.
+
 Obviously `kubectl`, **kcp** plugins, and **KubeStellar** executables are also needed.
 
-In this example we create a `kubestellar-client` pod based on the same image of `kubestellar-server` since it already contains the required executables listed above:
+In this example, we create a `kubestellar-client` pod based on the same image of `kubestellar-server` since it already contains the required executables listed above:
 
 ```shell
 $ kubectl apply -f kubestellar-client.yaml
@@ -168,7 +270,7 @@ kubestellar-server-566f5cb54d-mmp8p   1/1     Running   0          58m
 Now, let us log into the pod:
 
 ```shell
-$ kubectl exec -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-client -o jsonpath={.items[0].metadata.name}) -it -- /bin/bash
+kubectl exec -n kubestellar $(kubectl get pod -n kubestellar --selector=app=kubestellar-client -o jsonpath={.items[0].metadata.name}) -it -- bash
 ```
 
 From within the pod:
@@ -178,7 +280,5 @@ From within the pod:
 .
 └── root
     ├── compute
-    ├── espw
-    │   └── 1787fno3dx2oin4h-mb-00b49918-368b-47c8-8782-fa82dffbdc23
-    └── imw
+    └── espw
 ```

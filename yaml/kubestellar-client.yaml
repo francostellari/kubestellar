@@ -13,20 +13,27 @@ spec:
       labels:
         app: kubestellar-client
     spec:
-      volumes:
-      - name: kubestellar-pv
-        persistentVolumeClaim:
-          claimName: kubestellar-pvc
       containers:
       - name: kubestellar-client
-        image: quay.io/kubestellar/kubestellar:stable
+        image: quay.io/kubestellar/kubestellar:fs
+        imagePullPolicy: IfNotPresent
         volumeMounts:
-        - name: kubestellar-pv
-          mountPath: "/.kcp"
-          readOnly: false
+        # - name: kubestellar-pv
+        #   mountPath: "/kubestellar/home"
+        #   readOnly: true
+        - name: kubestellar-kc
+          mountPath: "/kubestellar/home/.kcp"
+          readOnly: true
         command: [ "/bin/bash" ]
         args:
           - -c
           - >-
-              echo Sleeping
+              echo Sleeping...
               && sleep 100000
+      volumes:
+      # - name: kubestellar-pv
+      #   persistentVolumeClaim:
+      #     claimName: kubestellar-pvc
+      - name: kubestellar-kc
+        secret:
+          secretName: kubestellar

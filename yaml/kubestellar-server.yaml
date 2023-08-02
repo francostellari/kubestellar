@@ -15,7 +15,39 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1Mi
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubestellar-service-account
+  namespace: kubestellar
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubestellar-role
+rules:
+- resources: [ "secrets" ]
+  verbs: [ "create" , "delete" ]
+  apiGroups: [ "" ]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubestellar-role-binding
+subjects:
+- kind: ServiceAccount
+  name: kubestellar-service-account
+  apiGroup: ""
+  namespace: kubestellar
+roleRef:
+  kind: ClusterRole
+  name: kubestellar-role
+  apiGroup: ""
 
 ---
 apiVersion: apps/v1
@@ -33,22 +65,30 @@ spec:
       labels:
         app: kubestellar-server
     spec:
-      volumes:
-      - name: kubestellar-pv
-        persistentVolumeClaim:
-          claimName: kubestellar-pvc
+      serviceAccountName: kubestellar-service-account
       containers:
       - name: kubestellar-server
-        image: quay.io/kubestellar/kubestellar:stable
-        imagePullPolicy: Always # IfNotPresent
+        image: quay.io/kubestellar/kubestellar:fs # for testing, change to :stable
+        imagePullPolicy: Always # for testing, change to IfNotPresent
+        env:
+        - name: EXTERNAL_HOSTNAME
+          value: "kubestellar.svc.cluster.local"
+        - name: EXTERNAL_PORT
+          value: "443"
+        - name: SECRET_NAMESPACES
+          value: "default,mcad-ns,etc"
         volumeMounts:
         - name: kubestellar-pv
-          mountPath: "/.kcp"
+          mountPath: "/kubestellar/home"
           readOnly: false
         ports:
         - name: ks-port
           protocol: TCP
           containerPort: 6443
+      volumes:
+      - name: kubestellar-pv
+        persistentVolumeClaim:
+          claimName: kubestellar-pvc
 
 ---
 kind: Service
@@ -87,3 +127,4 @@ spec:
             name: kubestellar-service
             port:
               number: 6443
+
