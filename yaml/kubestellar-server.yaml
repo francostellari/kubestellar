@@ -76,7 +76,7 @@ spec:
         - name: EXTERNAL_PORT
           value: "443"
         - name: SECRET_NAMESPACES
-          value: "default,mcad-ns,etc"
+          value: ""
         volumeMounts:
         - name: kubestellar-pv
           mountPath: "/kubestellar/home"
