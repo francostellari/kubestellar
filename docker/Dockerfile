@@ -62,8 +62,10 @@ FROM redhat/ubi9
 RUN dnf install -y jq procps && \
     groupadd kubestellar && \
     adduser -g kubestellar kubestellar && \
-    mkdir -p /kubestellar/home/.kcp /kubestellar/home/kubestellar-logs && \
-    chown -R kubestellar:kubestellar /kubestellar
+    mkdir -p /kubestellar/home/kubestellar-logs && \
+    chown -R kubestellar:kubestellar /kubestellar && \
+    chgrp -R 0 /kubestellar && \
+    chmod -R g=u /kubestellar
 
 # Copy binaries from the builder image
 COPY --from=builder /kubectl     /usr/local/bin/kubectl
@@ -76,6 +78,7 @@ COPY --from=builder /easy-rsa    /kubestellar/easy-rsa
 # Add entry script
 ADD entry.sh                     /kubestellar/entry.sh
 ADD tls-scripts                  /kubestellar/tls-scripts
+ADD syncer                       /kubestellar/kubestellar/bin
 
 # List volumes of ineterest
 VOLUME [ "/kubestellar/home/.kcp" , "/kubestellar/home/kubestellar-logs" , "/kubestellar/kcp" , "/kubestellar/kcp-plugins" , "/kubestellar/kubestellar" ]
