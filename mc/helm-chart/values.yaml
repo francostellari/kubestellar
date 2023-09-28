@@ -42,7 +42,7 @@ kcp:
 
     # Set the volume class for the specific cluster
     # For IBM ROK cluster set it to ibmc-block-gold
-    volumeClassName: ibmc-block-gold
+    # volumeClassName: ibmc-block-gold
 
     # By trial and errors, this seems to be required for running in non default namespaces
     securityContext: null
@@ -53,27 +53,8 @@ kcp:
     pullPolicy: IfNotPresent
     externalLogicalClusterAdminFlag: false # required by release-0.11
 
-
-
-# # Prefix used for defining KubeStellar objects in the cluster
-# prefix: kubestellar
-
-# # Namespace where KubeStellar will be deployed
-# namespace: kubestellar
-
 # KubeStellar image parameters
 image:
   repository: quay.io/kubestellar/kubestellar
   pullPolicy: IfNotPresent
   tag: main-mc
-
-# # Storage size
-# storageSize: 1Gi
-
-# # Select the cluster type
-# clusterType: Kubernetes # OpenShift or Kubernetes
-
-# # Parameters for setting up the externally accessible kubeconfig
-# EXTERNAL_HOSTNAME: "" # an empty string will let the container infer its ingress/route
-# EXTERNAL_PORT: 443
-

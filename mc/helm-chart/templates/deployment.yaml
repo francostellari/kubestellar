@@ -32,11 +32,11 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["sleep", "infinity"]
-        env:
-        - name: EXTERNAL_HOSTNAME
-          value: "{{ .Values.global.EXTERNAL_HOSTNAME }}"
-        - name: EXTERNAL_PORT
-          value: "{{ .Values.global.EXTERNAL_PORT }}"
+        # env:
+        # - name: EXTERNAL_HOSTNAME
+        #   value: "{{ .Values.global.EXTERNAL_HOSTNAME }}"
+        # - name: EXTERNAL_PORT
+        #   value: "{{ .Values.global.EXTERNAL_PORT }}"
       #   volumeMounts:
       #   - name: kubestellar-pv
       #     mountPath: "/home/kubestellar/kubestellar-logs"
