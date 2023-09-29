@@ -18,33 +18,27 @@ metadata:
   name: kubestellar-role
 rules:
 
+# - apiGroups: [ "" ]
+#   resources: [ "secrets" ]
+#   resourceNames: [ "kcp-front-proxy-cert" , "cluster-admin-client-cert" ]
+#   verbs: [ "get"  ]
+
+- apiGroups: [ "route.openshift.io" ]
+  resources: [ "routes" ]
+  resourceNames: [ "kcp-front-proxy" ]
+  verbs: [ "get" ]
+
 - apiGroups: [ "" ]
   resources: [ "secrets" ]
-  resourceNames: [ "kcp-front-proxy-cert" , "cluster-admin-client-cert" ]
-  verbs: [ "get"  ]
+  # resourceNames: [ "kubestellar" ]
+  verbs: [ "get" , "create" , "delete" ]
 
 - apiGroups: [ "apps" ]
   resources: [ "deployments" ]
-  resourceNames: [ "kcp" ]
-  verbs: [ "get"  ]
+  resourceNames: [ "kubstellar" ]
+  verbs: [ "*"  ]
 
-
-
-# - apiGroups: [ "" ]
-#   resources: [ "secrets" ]
-#   # resourceNames: [ "{{ .Values.secret }}" ]
-#   verbs: [ "get" , "list", "create" , "delete" ]
-
-# {{ if eq .Values.clusterType "OpenShift" }} # OpenShift
-# - apiGroups: [ "route.openshift.io" ]
-#   resources: [ "routes" ]
-#   resourceNames: [ "kubestellar-route" ]
-#   verbs: [ "get" ]
-# {{ else }} # Kubernetes
-# - apiGroups: [ "networking.k8s.io" ]
-#   resources: [ "ingresses" ]
-#   resourceNames: [ "kubestellar-ingress" ]
-#   verbs: [ "get" ]
-# {{ end }}
-
-
+- apiGroups: [ "" ]
+  resources: [ "pods" , "pods/log"]
+  verbs: [ "get" ]
+  # verbs: [ "get" , "list" ]

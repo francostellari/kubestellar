@@ -31,21 +31,49 @@ spec:
       - name: core
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["sleep", "infinity"]
-        # env:
-        # - name: EXTERNAL_HOSTNAME
-        #   value: "{{ .Values.global.EXTERNAL_HOSTNAME }}"
-        # - name: EXTERNAL_PORT
-        #   value: "{{ .Values.global.EXTERNAL_PORT }}"
-      #   volumeMounts:
-      #   - name: kubestellar-pv
-      #     mountPath: "/home/kubestellar/kubestellar-logs"
-      #     readOnly: false
-      #   ports:
-      #   - name: ks-port
-      #     protocol: TCP
-      #     containerPort: 6443
-      # volumes:
-      # - name: kubestellar-pv
-      #   persistentVolumeClaim:
-      #     claimName: kubestellar-pvc
+        command: [ "/home/kubestellar/core-entry.sh" ]
+        volumeMounts:
+        - name: kcp-front-proxy-cert
+          mountPath: /home/kubestellar/kcp-front-proxy-cert
+        - name: cluster-admin-client-cert
+          mountPath: /home/kubestellar/cluster-admin-client-cert
+      volumes:
+      - name: kcp-front-proxy-cert
+        secret:
+          secretName: kcp-front-proxy-cert
+          items:
+            - key: ca.crt
+              path: ca.crt
+      - name: cluster-admin-client-cert
+        secret:
+          secretName: cluster-admin-client-cert
+          items:
+            - key: tls.crt
+              path: client.crt
+            - key: tls.key
+              path: client.key
+
+
+
+
+      # - name: mailbox-controller
+      #   image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+      #   imagePullPolicy: {{ .Values.image.pullPolicy }}
+      #   command: [ "/home/kubestellar/mailbox-controller-entry.sh" ]
+      #   env:
+      #   - name: VERBOSITY
+      #     value: "{{ .Values.CONTROLLER_VERBOSITY }}"
+      # - name: where-resolver
+      #   image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+      #   imagePullPolicy: {{ .Values.image.pullPolicy }}
+      #   command: [ "/home/kubestellar/where-resolver-entry.sh" ]
+      #   env:
+      #   - name: VERBOSITY
+      #     value: "{{ .Values.CONTROLLER_VERBOSITY }}"
+      # - name: placement-translator
+      #   image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+      #   imagePullPolicy: {{ .Values.image.pullPolicy }}
+      #   command: [ "/home/kubestellar/placement-translator-entry.sh" ]
+      #   env:
+      #   - name: VERBOSITY
+      #     value: "{{ .Values.CONTROLLER_VERBOSITY }}"

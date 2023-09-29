@@ -1,0 +1,51 @@
+# Copyright 2023 The KubeStellar Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# REQUIRED: Specify the fully qualified DNS route to kcp
+# It's uusally in the form kcp.apps.<cluster-dns>
+# For example: kcp.apps.edgeplatform1-9ca4d14d48413d18ce61b80811ba4308-0000.us-south.containers.appdomain.cloud
+externalHostname: "kcp.apps.edgeplatform1-9ca4d14d48413d18ce61b80811ba4308-0000.us-south.containers.appdomain.cloud"
+
+kcpFrontProxy:
+
+  # enable OpenShift routes for OpenShift clusters
+  openshiftRoute:
+    enabled: true
+
+  # Use a self-signed certificate for routes longer 64 characters
+  certificate:
+    issuerSpec:
+      selfSigned: {}
+      acme: null
+
+  # Force the use of kcp v0.11.0 image, which is compatible with KubeStellar
+  # image: ghcr.io/kcp-dev/kcp
+  # tag: release-0.11
+  # pullPolicy: IfNotPresent
+
+kcp:
+
+  # Set the volume class for the specific cluster
+  # For IBM ROK cluster set it to ibmc-block-gold
+  volumeClassName: ibmc-block-gold
+
+  # By trial and errors, this seems to be required for running in non default namespaces
+  securityContext: null
+
+  # Force the use of kcp v0.11.0 image, which is compatible with KubeStellar
+  # image: ghcr.io/kcp-dev/kcp
+  # tag: release-0.11
+  # pullPolicy: IfNotPresent
+  externalLogicalClusterAdminFlag: false # required by release-0.11

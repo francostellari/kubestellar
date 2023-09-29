@@ -21,7 +21,7 @@ GIT_COMMIT := $(shell git rev-parse --short HEAD || echo 'local')
 GIT_DIRTY := $(shell [ $$(git status --porcelain=v2 | wc -l) == 0 ] && echo 'clean' || echo 'dirty')
 GIT_VERSION := $(shell go mod edit -json | jq '.Require[] | select(.Path == "k8s.io/kubernetes") | .Version' --raw-output)+kcp-$(shell git describe --tags --match='v*' --abbrev=14 "$(GIT_COMMIT)^{commit}" 2>/dev/null || echo v0.0.0-$(GIT_COMMIT))
 
-CORE_PLATFORMS ?= linux/amd64/v2,linux/arm64,linux/ppc64le # kcp does not support linux/s390x
+CORE_PLATFORMS ?= linux/amd64,linux/amd64/v2,linux/arm64,linux/ppc64le # kcp does not support linux/s390x
 CORE_IMAGE_REPO ?= quay.io/kubestellar/kubestellar
 BUILD_TIME_TAG := $(shell date -u +b%y-%m-%d-%H-%M-%S)
 GIT_TAG = git-${GIT_COMMIT}-${GIT_DIRTY}
@@ -131,7 +131,8 @@ build-all:
 .PHONY: kubestellar-image
 kubestellar-image:
 	if ! docker buildx inspect kubestellar &> /dev/null; then docker buildx create --name kubestellar --platform $(CORE_PLATFORMS); fi
-	if [ -n "$(EXTRA_CORE_TAG)" ]; then extra="--tag $(CORE_IMAGE_REPO):$(EXTRA_CORE_TAG)"; else extra=""; fi; eval docker buildx --builder kubestellar build --push --sbom=true --platform $(CORE_PLATFORMS) --tag $(CORE_IMAGE_REPO):$(BUILD_TIME_TAG) --tag $(CORE_IMAGE_REPO):$(GIT_TAG) $$extra -f core.Dockerfile .
+	# if [ -n "$(EXTRA_CORE_TAG)" ]; then extra="--tag $(CORE_IMAGE_REPO):$(EXTRA_CORE_TAG)"; else extra=""; fi; eval docker buildx --builder kubestellar build --push --sbom=true --platform $(CORE_PLATFORMS) --tag $(CORE_IMAGE_REPO):$(BUILD_TIME_TAG) --tag $(CORE_IMAGE_REPO):$(GIT_TAG) $$extra -f core.Dockerfile .
+	if [ -n "$(EXTRA_CORE_TAG)" ]; then extra="--tag $(CORE_IMAGE_REPO):$(EXTRA_CORE_TAG)"; else extra=""; fi; eval docker buildx --builder kubestellar build --push --sbom=true --platform $(CORE_PLATFORMS) $$extra -f core.Dockerfile .
 
 .PHONY: kubestellar-image-local
 kubestellar-image-local:
@@ -152,7 +153,7 @@ kubestellar-image-local:
 .PHONY: build-kubestellar-syncer-image
 build-kubestellar-syncer-image: DOCKER_REPO ?= quay.io/kubestellar/syncer
 build-kubestellar-syncer-image: IMAGE_TAG ?= $(GIT_TAG)
-build-kubestellar-syncer-image: ADDITIONAL_ARGS ?= 
+build-kubestellar-syncer-image: ADDITIONAL_ARGS ?=
 build-kubestellar-syncer-image: require-ko
 	echo KO_DOCKER_REPO=$(DOCKER_REPO) GOFLAGS=-buildvcs=false ko build --platform=$(SYNCER_PLATFORMS) --bare --tags $(IMAGE_TAG) $(ADDITIONAL_ARGS) ./cmd/syncer
 	$(eval SYNCER_IMAGE=$(shell KO_DOCKER_REPO=$(DOCKER_REPO) GOFLAGS=-buildvcs=false ko build --platform=$(SYNCER_PLATFORMS) --bare --tags $(IMAGE_TAG) $(ADDITIONAL_ARGS) ./cmd/syncer))
@@ -215,11 +216,11 @@ deploy-docs: venv
 	REMOTE=$(REMOTE) BRANCH=$(BRANCH) docs/scripts/deploy-docs.sh
 
 .PHONY: docs-ecutable
-docs-ecutable: 
+docs-ecutable:
 	MANIFEST=$(MANIFEST) docs/scripts/docs-ecutable.sh
 
 .PHONY: write-time-to-file
-write-time-to-file: 
+write-time-to-file:
 	FILENAME=$(FILENAME) docs/scripts/get-elapsed-time.sh
 
 tools: $(GOLANGCI_LINT) $(CONTROLLER_GEN) $(API_GEN) $(YAML_PATCH) $(GOTESTSUM) $(OPENSHIFT_GOIMPORTS) $(CODE_GENERATOR)
@@ -427,7 +428,7 @@ kcp/bin/kcp:
 
 .PHONY: e2e-test-kubestellar-syncer
 e2e-test-kubestellar-syncer: WORK_DIR ?= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-e2e-test-kubestellar-syncer: TEST_ARGS ?= 
+e2e-test-kubestellar-syncer: TEST_ARGS ?=
 e2e-test-kubestellar-syncer: KIND_CLUSTER_NAME ?= e2e-kubestellar
 e2e-test-kubestellar-syncer: e2e-test-kubestellar-syncer-cleanup kcp/bin/kcp
 	export PATH=$(PWD)/kcp/bin:$$PATH && \
