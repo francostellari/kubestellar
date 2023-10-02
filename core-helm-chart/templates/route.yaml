@@ -13,12 +13,10 @@
 # limitations under the License.
 
 {{ if eq .Values.clusterType "OpenShift" }} # OpenShift
-
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: {{ .Values.prefix }}-route
-  namespace: {{ .Values.namespace }}
 spec:
   host: {{ .Values.EXTERNAL_HOSTNAME }}
   port:

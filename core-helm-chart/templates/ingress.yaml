@@ -22,7 +22,6 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     kubernetes.io/ingress.class: nginx
   name: {{ .Values.prefix }}-ingress
-  namespace: {{ .Values.namespace }}
 spec:
   rules:
   - host: {{ .Values.EXTERNAL_HOSTNAME }}

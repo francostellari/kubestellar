@@ -15,30 +15,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-server
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.prefix }}-core
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-server
+      app: {{ .Values.prefix }}-core
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-server
+        app: {{ .Values.prefix }}-core
     spec:
       serviceAccountName: {{ .Values.prefix }}-sa
       containers:
-      - name: {{ .Values.prefix }}-server
+      - name: {{ .Values.prefix }}-core
+        # securityContext:
+        #   runAsNonRoot: true
+        #   allowPrivilegeEscalation: false
+        #   capabilities:
+        #     drop: ["ALL"]
+        #   seccompProfile:
+        #     type: RuntimeDefault
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        # command: [ "sleep" , "infinity" ]
         env:
         - name: EXTERNAL_HOSTNAME
           value: "{{ .Values.EXTERNAL_HOSTNAME }}"
         - name: EXTERNAL_PORT
           value: "{{ .Values.EXTERNAL_PORT }}"
         volumeMounts:
-        - name: {{ .Values.prefix }}-pv
+        # - name: {{ .Values.prefix }}-kcp-pv
+        #   mountPath: "/home/kubestellar/.kcp"
+        #   readOnly: false
+        - name: {{ .Values.prefix }}-logs-pv
           mountPath: "/home/kubestellar/kubestellar-logs"
           readOnly: false
         ports:
@@ -46,6 +56,9 @@ spec:
           protocol: TCP
           containerPort: 6443
       volumes:
-      - name: {{ .Values.prefix }}-pv
+      - name: {{ .Values.prefix }}-kcp-pv
         persistentVolumeClaim:
-          claimName: {{ .Values.prefix }}-pvc
+          claimName: {{ .Values.prefix }}-kcp-pvc
+      - name: {{ .Values.prefix }}-logs-pv
+        persistentVolumeClaim:
+          claimName: {{ .Values.prefix }}-logs-pvc

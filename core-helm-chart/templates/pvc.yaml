@@ -15,8 +15,18 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.prefix }}-pvc
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.prefix }}-kcp-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storageSize }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.prefix }}-logs-pvc
 spec:
   accessModes:
   - ReadWriteOnce

@@ -16,7 +16,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ .Values.prefix }}-service
-  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: {{ .Values.prefix }}-server

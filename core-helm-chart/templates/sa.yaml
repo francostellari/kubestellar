@@ -16,4 +16,3 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Values.prefix }}-sa
-  namespace: {{ .Values.namespace }}

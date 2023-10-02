@@ -15,9 +15,6 @@
 # Prefix used for defining KubeStellar objects in the cluster
 prefix: kubestellar
 
-# Namespace where KubeStellar will be deployed
-namespace: kubestellar
-
 # KubeStellar image parameters
 image:
   repository: quay.io/kubestellar/kubestellar

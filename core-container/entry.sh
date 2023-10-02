@@ -33,7 +33,10 @@ fi
 # Create the certificates
 if [ -n "$EXTERNAL_HOSTNAME" ]; then
     echo "< Ensuring the TLS certificate >---------------------------"
+    mkdir -p ${PWD}/.kcp # required in Open Shift clusters
+    pushd ${PWD}/.kcp
     eval pieces=($(kubestellar-ensure-kcp-server-creds ${EXTERNAL_HOSTNAME}))
+    popd
     echo "TLS certificates for server ${EXTERNAL_HOSTNAME}:"
     echo ${pieces[0]}
     echo ${pieces[1]}
@@ -43,7 +46,7 @@ fi
 # Start kcp
 echo "< Starting kcp >-------------------------------------------"
 
-mkdir -p ${PWD}/kubestellar-logs # required in Open Shift clusters
+# mkdir -p ${PWD}/kubestellar-logs # required in Open Shift clusters
 
 if [ -n "$EXTERNAL_HOSTNAME" ]; then
     echo -n "Running kcp with TLS keys... "
