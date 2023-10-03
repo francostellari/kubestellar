@@ -15,10 +15,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Values.prefix }}-service
+  name: kubestellar-service
 spec:
   selector:
-    app: {{ .Values.prefix }}-server
+    app: kubestellar
   ports:
     - protocol: TCP
       port: 6443 # Default port for image

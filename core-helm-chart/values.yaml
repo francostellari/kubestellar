@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Prefix used for defining KubeStellar objects in the cluster
-prefix: kubestellar
-
 # KubeStellar image parameters
 image:
   repository: quay.io/kubestellar/kubestellar

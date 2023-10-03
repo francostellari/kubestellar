@@ -15,7 +15,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.prefix }}-role
+  name: kubestellar-role
 rules:
 - apiGroups: [ "" ]
   resources: [ "secrets" ]
@@ -24,13 +24,11 @@ rules:
 {{ if eq .Values.clusterType "OpenShift" }} # OpenShift
 - apiGroups: [ "route.openshift.io" ]
   resources: [ "routes" ]
-  resourceNames: [ "{{ .Values.prefix }}-route" ]
+  resourceNames: [ "kubestellar-route" ]
   verbs: [ "get" ]
 {{ else }} # Kubernetes
 - apiGroups: [ "networking.k8s.io" ]
   resources: [ "ingresses" ]
-  resourceNames: [ "{{ .Values.prefix }}-ingress" ]
+  resourceNames: [ "kubestellar-ingress" ]
   verbs: [ "get" ]
 {{ end }}
-
-

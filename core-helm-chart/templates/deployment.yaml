@@ -15,27 +15,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prefix }}-core
+  name: kubestellar
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.prefix }}-core
+      app: kubestellar
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Values.prefix }}-core
+        app: kubestellar
     spec:
-      serviceAccountName: {{ .Values.prefix }}-sa
+      serviceAccountName: kubestellar-sa
       containers:
-      - name: {{ .Values.prefix }}-core
-        # securityContext:
-        #   runAsNonRoot: true
-        #   allowPrivilegeEscalation: false
-        #   capabilities:
-        #     drop: ["ALL"]
-        #   seccompProfile:
-        #     type: RuntimeDefault
+      - name: core
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         # command: [ "sleep" , "infinity" ]
@@ -45,10 +45,10 @@ spec:
         - name: EXTERNAL_PORT
           value: "{{ .Values.EXTERNAL_PORT }}"
         volumeMounts:
-        # - name: {{ .Values.prefix }}-kcp-pv
-        #   mountPath: "/home/kubestellar/.kcp"
-        #   readOnly: false
-        - name: {{ .Values.prefix }}-logs-pv
+        - name: kubestellar-kcp-pv
+          mountPath: "/home/kubestellar/.kcp"
+          readOnly: false
+        - name: kubestellar-logs-pv
           mountPath: "/home/kubestellar/kubestellar-logs"
           readOnly: false
         ports:
@@ -56,9 +56,9 @@ spec:
           protocol: TCP
           containerPort: 6443
       volumes:
-      - name: {{ .Values.prefix }}-kcp-pv
+      - name: kubestellar-kcp-pv
         persistentVolumeClaim:
-          claimName: {{ .Values.prefix }}-kcp-pvc
-      - name: {{ .Values.prefix }}-logs-pv
+          claimName: kubestellar-kcp-pvc
+      - name: kubestellar-logs-pv
         persistentVolumeClaim:
-          claimName: {{ .Values.prefix }}-logs-pvc
+          claimName: kubestellar-logs-pvc

@@ -18,17 +18,27 @@ set -e
 
 echo "< Starting Kubestellar container >-------------------------"
 
+echo "KUBECONFIG=${KUBECONFIG}"
+echo "EXTERNAL_HOSTNAME=$EXTERNAL_HOSTNAME"
+
 # Try to guess the route/ingress
 if [ -z "$EXTERNAL_HOSTNAME" ]; then
+    # set KUBECONFIG to empty string so that `kubectl` falls back on its in-cluster technique for reading credentials from the filesystem.
+    KUBECONFIG_BACKUP=$KUBECONFIG ; KUBECONFIG=
     if kubectl get route kubestellar-route &> /dev/null; then
         EXTERNAL_HOSTNAME=$(kubectl get route kubestellar-route -o yaml -o jsonpath={.spec.host} 2> /dev/null)
     fi
+    KUBECONFIG=$KUBECONFIG_BACKUP
 fi
 if [ -z "$EXTERNAL_HOSTNAME" ]; then
+    # set KUBECONFIG to empty string so that `kubectl` falls back on its in-cluster technique for reading credentials from the filesystem.
+    KUBECONFIG_BACKUP=$KUBECONFIG ; KUBECONFIG=
     if kubectl get ingress kubestellar-ingress &> /dev/null; then
         EXTERNAL_HOSTNAME=$(kubectl get ingress kubestellar-ingress -o yaml -o jsonpath={.spec.rules[0].host} 2> /dev/null)
     fi
+    KUBECONFIG=$KUBECONFIG_BACKUP
 fi
+echo "EXTERNAL_HOSTNAME=$EXTERNAL_HOSTNAME"
 
 # Create the certificates
 if [ -n "$EXTERNAL_HOSTNAME" ]; then
@@ -79,10 +89,9 @@ kubestellar start
 # Create secrets in Kuberntes cluster
 echo "< Create secrets >-----------------------------------------"
 
+echo "Ensure secret in the current namespace..."
 # set KUBECONFIG to empty string so that `kubectl` falls back on its in-cluster technique for reading credentials from the filesystem.
 KUBECONFIG=
-
-echo "Ensure secret in the current namespace..."
 if kubectl delete secret kubestellar 2> /dev/null; then
     echo " Deleted secret in the current namespace."
 fi
@@ -101,6 +110,5 @@ else
 fi
 
 # Done, sleep forerver...
-touch ready
-echo "Ready!"
+echo "***READY***"
 sleep infinity
