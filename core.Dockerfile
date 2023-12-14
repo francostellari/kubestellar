@@ -3,6 +3,8 @@
 ###############################################################################
 FROM redhat/ubi9 AS builder
 
+ENV sp_name="kcp"
+
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETPLATFORM
@@ -12,7 +14,7 @@ RUN groupadd kubestellar && useradd -g kubestellar kubestellar
 
 WORKDIR /home/kubestellar
 
-RUN mkdir -p .kcp && \
+RUN mkdir -p ".${sp_name}" && \
     dnf install -y git golang jq procps && \
     go install github.com/mikefarah/yq/v4@v4.34.2 && \
     curl -SL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/v1.25.3/bin/${TARGETPLATFORM}/kubectl" && \
@@ -26,14 +28,14 @@ RUN mkdir -p .kcp && \
     mkdir easy-rsa && \
     tar -C easy-rsa -zxf easy-rsa.tar.gz --wildcards --strip-components=1 EasyRSA*/* && \
     rm easy-rsa.tar.gz && \
-    curl -SL -o kcp.tar.gz "https://github.com/kcp-dev/kcp/releases/download/v0.11.0/kcp_0.11.0_${TARGETOS}_${TARGETARCH}.tar.gz" && \
-    mkdir kcp && \
-    tar -C kcp -zxf kcp.tar.gz && \
-    rm kcp.tar.gz && \
-    curl -SL -o kcp-plugins.tar.gz "https://github.com/kcp-dev/kcp/releases/download/v0.11.0/kubectl-kcp-plugin_0.11.0_${TARGETOS}_${TARGETARCH}.tar.gz" && \
-    mkdir kcp-plugins && \
-    tar -C kcp-plugins -zxf kcp-plugins.tar.gz && \
-    rm kcp-plugins.tar.gz && \
+    curl -SL -o "${sp_name}.tar.gz" "https://github.com/${sp_name}-dev/${sp_name}/releases/download/v0.11.0/${sp_name}_0.11.0_${TARGETOS}_${TARGETARCH}.tar.gz" && \
+    mkdir "${sp_name}" && \
+    tar -C "${sp_name}" -zxf "${sp_name}.tar.gz" && \
+    rm "${sp_name}.tar.gz" && \
+    curl -SL -o "${sp_name}-plugins.tar.gz" "https://github.com/${sp_name}-dev/${sp_name}/releases/download/v0.11.0/kubectl-${sp_name}-plugin_0.11.0_${TARGETOS}_${TARGETARCH}.tar.gz" && \
+    mkdir "${sp_name}-plugins" && \
+    tar -C "${sp_name}-plugins" -zxf "${sp_name}-plugins.tar.gz" && \
+    rm "${sp_name}-plugins.tar.gz" && \
     git config --global --add safe.directory /home/kubestellar && \
     mkdir -p bin && \
     mkdir -p scripts
@@ -71,20 +73,22 @@ RUN make innerbuild GIT_DIRTY=$GIT_DIRTY IGNORE_GO_VERSION=yesplease
 
 FROM redhat/ubi9
 
+ENV sp_name="kcp"
+
 WORKDIR /home/kubestellar
 
 RUN dnf install -y jq procps && \
     dnf -y upgrade openssl && \
     groupadd kubestellar && \
     adduser -g kubestellar kubestellar && \
-    mkdir -p .kcp
+    mkdir -p ".${sp_name}"
 
 # copy binaries from the builder image
 COPY --from=builder /home/kubestellar/easy-rsa                           easy-rsa/
 COPY --from=builder /root/go/bin                                         /usr/local/bin/
 COPY --from=builder /usr/local/bin/kubectl                               /usr/local/bin/kubectl
-COPY --from=builder /home/kubestellar/kcp/bin                            kcp/bin/
-COPY --from=builder /home/kubestellar/kcp-plugins/bin                    kcp/bin/
+COPY --from=builder /home/kubestellar/${sp_name}/bin                     ${sp_name}/bin/
+COPY --from=builder /home/kubestellar/${sp_name}-plugins/bin             ${sp_name}/bin/
 COPY --from=builder /home/kubestellar/bin                                bin/
 COPY --from=builder /home/kubestellar/config                             config/
 COPY --from=builder /home/kubestellar/kube-bind/bin                      kube-bind/bin/
@@ -99,8 +103,8 @@ RUN chown -R kubestellar:0 /home/kubestellar && \
     chmod -R g=u /home/kubestellar
 
 # setup the environment variables
-ENV PATH=/home/kubestellar/bin:/home/kubestellar/kcp/bin:/home/kubestellar/kube-bind/bin:/home/kubestellar/dex/bin:/home/kubestellar/easy-rsa:$PATH
-ENV KUBECONFIG=/home/kubestellar/.kcp/admin.kubeconfig
+ENV PATH=/home/kubestellar/bin:/home/kubestellar/${sp_name}/bin:/home/kubestellar/kube-bind/bin:/home/kubestellar/dex/bin:/home/kubestellar/easy-rsa:$PATH
+ENV KUBECONFIG=/home/kubestellar/.${sp_name}/admin.kubeconfig
 ENV EXTERNAL_HOSTNAME=""
 ENV EXTERNAL_PORT=""
 

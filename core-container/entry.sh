@@ -17,6 +17,7 @@
 set -e
 
 KUBESTELLAR_SERVICE="kubestellar"
+sp_name="kcp"
 
 if base64 -w 0 <<<"" &>/dev/null
 then nolbs='-w 0'
@@ -27,31 +28,31 @@ function echoerr() {
    echo "ERROR: $1" >&2
 }
 
-function wait_kcp_ready() {
-    echo "Waiting for kcp to be ready... this may take a while."
+function wait_sp_ready() {
+    echo "Waiting for ${sp_name} to be ready... this may take a while."
     (
-        until [ "$(kubectl --kubeconfig $host_kubeconfig logs $(kubectl --kubeconfig $host_kubeconfig get pod --selector=app=kubestellar -o jsonpath='{.items[0].metadata.name}') -c kcp | grep '***READY***')" != "" ]; do
+        until [ "$(kubectl --kubeconfig $host_kubeconfig logs $(kubectl --kubeconfig $host_kubeconfig get pod --selector=app=kubestellar -o jsonpath='{.items[0].metadata.name}') -c "${sp_name}" | grep '***READY***')" != "" ]; do
            sleep 10
         done
     )
 }
 
-function get_kcp_kubeconfig() {
+function get_sp_kubeconfig() {
     while ! KUBECONFIG=$host_kubeconfig kubectl get secret kubestellar; do
         echo "Waiting for kubestellar secret."
         sleep 5
     done
-    kcp_kubeconfig_dir="/home/kubestellar/.kcp"
-    kcp_kubeconfig="${kcp_kubeconfig_dir}/admin.kubeconfig"
-    external_kcp_kubeconfig="${kcp_kubeconfig_dir}/external.kubeconfig"
-    mkdir -p $kcp_kubeconfig_dir
-    echo "Copying the kubeconfigs from kubestellar seret into ${kcp_kubeconfig} and ${external_kcp_kubeconfig}..."
-    kubectl --kubeconfig $host_kubeconfig get secrets kubestellar -o jsonpath='{.data.admin\.kubeconfig}' | base64 --decode > $kcp_kubeconfig
-    kubectl --kubeconfig $host_kubeconfig get secrets kubestellar -o jsonpath='{.data.external\.kubeconfig}' | base64 --decode > $external_kcp_kubeconfig
+    sp_kubeconfig_dir="/home/kubestellar/.${sp_name}"
+    sp_kubeconfig="${sp_kubeconfig_dir}/admin.kubeconfig"
+    external_sp_kubeconfig="${sp_kubeconfig_dir}/external.kubeconfig"
+    mkdir -p $sp_kubeconfig_dir
+    echo "Copying the kubeconfigs from kubestellar seret into ${sp_kubeconfig} and ${external_sp_kubeconfig}..."
+    kubectl --kubeconfig $host_kubeconfig get secrets kubestellar -o jsonpath='{.data.admin\.kubeconfig}' | base64 --decode > $sp_kubeconfig
+    kubectl --kubeconfig $host_kubeconfig get secrets kubestellar -o jsonpath='{.data.external\.kubeconfig}' | base64 --decode > $external_sp_kubeconfig
 }
 
-function create_kcp_provider_object() {
-    get_kcp_kubeconfig     # kcp is created in a seperate container 
+function create_sp_provider_object() {
+    get_sp_kubeconfig     # created in a seperate container
     kubectl --kubeconfig $SM_CONFIG apply -f - <<EOF
 apiVersion: v1
 kind: Secret
@@ -60,8 +61,8 @@ metadata:
   name: kcpsec
 type: Opaque
 data:
-  kubeconfig: $(base64 $nolbs < $kcp_kubeconfig)
-  external: $(base64 $nolbs < $external_kcp_kubeconfig)
+  kubeconfig: $(base64 $nolbs < $sp_kubeconfig)
+  external: $(base64 $nolbs < $external_sp_kubeconfig)
 ---
 apiVersion: space.kubestellar.io/v1alpha1
 kind: SpaceProviderDesc
@@ -77,7 +78,7 @@ EOF
     echo "Waiting for spaceproviderdesc to reach the Ready phase."
     kubectl --kubeconfig ${SM_CONFIG} wait --for=jsonpath='{.status.Phase}'=Ready spaceproviderdesc $PROVIDER_NAME
 }
- 
+
 function create_kubeflex_provider_object() {
     echo "Waiting for the kubeflex provider to be ready... this may take a while."
     (
@@ -110,8 +111,8 @@ function create_spaceprovider_object() {
             sleep 10
         done
     )
-    if [ "$SPACE_PROVIDER_TYPE" == "kcp" ]; then
-        create_kcp_provider_object
+    if [ "$SPACE_PROVIDER_TYPE" == "${sp_name}" ]; then
+        create_sp_provider_object
     elif [ "$SPACE_PROVIDER_TYPE" == "kubeflex" ]; then
         create_kubeflex_provider_object
     else
@@ -129,7 +130,7 @@ function wait-kubestellar-ready() {
     echo "Success!"
 }
 
-function guess_kcp_dns() {
+function guess_sp_dns() {
     if [ -z "$EXTERNAL_HOSTNAME" ]; then
         # Try to guess the route
         if kubectl --kubeconfig $host_kubeconfig get route kubestellar-route &> /dev/null; then
@@ -145,42 +146,41 @@ function guess_kcp_dns() {
     echo "${EXTERNAL_HOSTNAME}"
 }
 
-function run_kcp() {
-    echo "--< Starting kcp >--"
+function run_sp() {
+    echo "--< Starting ${sp_name} >--"
 
     echo "EXTERNAL_HOSTNAME=${EXTERNAL_HOSTNAME}"
 
     # Check EXTERNAL_HOSTNAME
     if [ -z "$EXTERNAL_HOSTNAME" ]; then
         echo "Trying to guess the DNS from route/ingress...."
-        export EXTERNAL_HOSTNAME=$(guess_kcp_dns)
+        export EXTERNAL_HOSTNAME=$(guess_sp_dns)
     fi
     echo "EXTERNAL_HOSTNAME=${EXTERNAL_HOSTNAME}"
 
     # Create the certificates
     if [ -n "$EXTERNAL_HOSTNAME" ]; then
         echo "Creating the TLS certificates"
-        # mkdir -p .kcp
-        cd .kcp
+        cd ".${sp_name}"
         eval pieces_external=($(kubestellar-ensure-kcp-server-creds ${EXTERNAL_HOSTNAME}))
         eval pieces_cluster=($(kubestellar-ensure-kcp-server-creds ${KUBESTELLAR_SERVICE})) #############
         cd ..
     fi
 
-    # Running kcp
+    # Running sp
     if [ -n "$EXTERNAL_HOSTNAME" ]; then
          # required to fix the restart
         echo "Removing existing apiserver keys... "
-        if ! rm /home/kubestellar/.kcp/apiserver.* &> /dev/null ; then
+        if ! rm /home/kubestellar/.${sp_name}/apiserver.* &> /dev/null ; then
             echo "Nothing to remove... must be the first time."
         else
             echo "Existing keys removed... the container mast have restarted."
         fi
-        echo -n "Running kcp with TLS keys... "
-        kcp start --tls-sni-cert-key ${pieces_external[1]},${pieces_external[2]} --tls-sni-cert-key ${pieces_cluster[1]},${pieces_cluster[2]} & # &> kcp.log &
+        echo -n "Running ${sp_name} with TLS keys... "
+        ${sp_name} start --tls-sni-cert-key ${pieces_external[1]},${pieces_external[2]} --tls-sni-cert-key ${pieces_cluster[1]},${pieces_cluster[2]} &
     else
-        echo -n "Running kcp without TLS keys... "
-        kcp start &
+        echo -n "Running ${sp_name} without TLS keys... "
+        ${sp_name} start &
     fi
     echo Started.
 
@@ -194,20 +194,20 @@ function run_kcp() {
         sleep 5;
     done
     echo '"root:compute" workspace is ready'.
-    echo "kcp version: $(kubectl version --short 2> /dev/null | grep kcp | sed 's/.*kcp-//')"
+    echo "${sp_name} version: $(kubectl version --short 2> /dev/null | grep "${sp_name}" | sed "s/.*${sp_name}-//")"
     kubectl ws root
 
     # Generate the external.kubeconfig and cluster.kubeconfig
-    if [ -n "$EXTERNAL_HOSTNAME" ] && [ ! -d "${PWD}/.kcp-${EXTERNAL_HOSTNAME}" ]; then
+    if [ -n "$EXTERNAL_HOSTNAME" ] && [ ! -d "${PWD}/.${sp_name}-${EXTERNAL_HOSTNAME}" ]; then
         echo Creating external.kubeconfig...
-        switch-domain .kcp/admin.kubeconfig .kcp/external.kubeconfig root ${EXTERNAL_HOSTNAME} ${EXTERNAL_PORT} ${pieces_external[0]}
-        switch-domain .kcp/admin.kubeconfig .kcp/cluster.kubeconfig root ${KUBESTELLAR_SERVICE} 6443 ${pieces_cluster[0]}
+        switch-domain ".${sp_name}/admin.kubeconfig" ".${sp_name}/external.kubeconfig" root ${EXTERNAL_HOSTNAME} ${EXTERNAL_PORT} ${pieces_external[0]}
+        switch-domain ".${sp_name}/admin.kubeconfig" ".${sp_name}/cluster.kubeconfig" root ${KUBESTELLAR_SERVICE} 6443 ${pieces_cluster[0]}
     fi
 
     # Ensure kubeconfig secret
     echo Creating the kubestellar secret...
     if [ -n "${EXTERNAL_HOSTNAME}" ]; then
-	clucfg="  cluster.kubeconfig: $(base64 $nolbs < "${PWD}/.kcp/cluster.kubeconfig")"
+	clucfg="  cluster.kubeconfig: $(base64 $nolbs < "${PWD}/.${sp_name}/cluster.kubeconfig")"
     else
 	clucfg=""
     fi
@@ -218,8 +218,8 @@ metadata:
   name: kubestellar
 type: Opaque
 data:
-  admin.kubeconfig: $(base64 $nolbs < "${PWD}/.kcp/admin.kubeconfig")
-  external.kubeconfig: $(base64 $nolbs < "${PWD}/.kcp/external.kubeconfig")
+  admin.kubeconfig: $(base64 $nolbs < "${PWD}/.${sp_name}/admin.kubeconfig")
+  external.kubeconfig: $(base64 $nolbs < "${PWD}/.${sp_name}/external.kubeconfig")
 $clucfg
 EOF
 
@@ -242,7 +242,7 @@ function run_init() {
 function run_mailbox_controller() {
     echo "--< Starting mailbox-controller >--"
     wait-kubestellar-ready
-    get_kcp_kubeconfig
+    get_sp_kubeconfig
     KUBECONFIG=$SM_CONFIG
     if ! mailbox-controller -v=${VERBOSITY} ; then
         echoerr "unable to start mailbox-controller!"
@@ -253,7 +253,7 @@ function run_mailbox_controller() {
 function run_where_resolver() {
     echo "--< Starting where-resolver >--"
     wait-kubestellar-ready
-    get_kcp_kubeconfig
+    get_sp_kubeconfig
     KUBECONFIG=$SM_CONFIG
     if ! kubestellar-where-resolver -v ${VERBOSITY} ; then
         echoerr "unable to start kubestellar-where-resolver!"
@@ -264,7 +264,7 @@ function run_where_resolver() {
 function run_placement_translator() {
     echo "--< Starting placement-translator >--"
     wait-kubestellar-ready
-    get_kcp_kubeconfig
+    get_sp_kubeconfig
     KUBECONFIG=$SM_CONFIG
     if ! placement-translator -v=${VERBOSITY} ; then
         echoerr "unable to start mailbox-controller!"
@@ -317,7 +317,7 @@ if [ "$PROVIDER_SECRET_NAMESPACE" == "" ]; then
     PROVIDER_SECRET_NAMESPACE=psecret_namespace
 fi
 if [ "$SM_CONFIG" == "" ]; then
-    # if the space_manager_kubeconfig is not set, then we assume the 
+    # if the space_manager_kubeconfig is not set, then we assume the
     # hosting (aka core) cluster is the space manager cluster.
     SM_CONFIG=$host_kubeconfig
     export SM_CONFIG
@@ -345,7 +345,7 @@ echo "IN_CLUSTER=${IN_CLUSTER}"
 case "${ACTION}" in
 
 (kcp)
-    run_kcp;;
+    run_sp;;
 (init)
     run_init;;
 (mailbox-controller)
