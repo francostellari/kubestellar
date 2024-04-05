@@ -203,7 +203,7 @@ spec:
               - --version
               - "0.1.3"
               - --set
-              - "transport_cp_name=imbs1"
+              - "transport_cp_name= "
               - --set
               - "wds_cp_name={{.ControlPlaneName}}"
             env:
