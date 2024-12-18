@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../favicons/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -3368,8 +3368,13 @@
 </li>
 <li>
 <p>The reported state for a given workload object from a given WEC is implicitly augmented with metadata about the WEC and about the end-to-end propagation from WDS to that WEC. This extra information is available just like the regular contents of the object, for use in combining reported state.</p>
+<ul>
+<li>The specifics of queryable objects and implicit augmentations can be found in <code>api/control/v1alpha1/types.go</code> and are specified in <a href="#queryable-objects">Queryable Objects</a>.</li>
+</ul>
 </li>
-<li>The specifics of queryable objects and implicit augmentations can be found in <a href="../../../api/control/v1alpha1/types.go">types.go</a> and is specified in <a href="#queryable-objects">Queryable Objects</a>.</li>
+<li>
+<p>Errors in the user-supplied expressions are reported in relevant API objects (<code>StatusCollector</code> and <code>CombinedStatus</code>). For aggregation operations, input rows with expression errors are skipped.</p>
+</li>
 </ol>
 <h3 id="relation-with-sql">Relation with SQL<a class="headerlink" href="#relation-with-sql" title="Permanent link">#</a></h3>
 <h4 id="overview-of-relation-with-sql">Overview of Relation with SQL<a class="headerlink" href="#overview-of-relation-with-sql" title="Permanent link">#</a></h4>
@@ -3475,7 +3480,7 @@ from <code>DownsyncPolicyClause</code>, <code>NamespaceScopeDownsyncClause</code
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">       </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COUNT</span>
 <a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 </code></pre></div>
-<p>To specify using that, the <code>BindingSpec</code> would reference it from the <code>StatusCollection</code> in the relevant <code>DownsyncPolicyClause</code>(s). Following is an example.</p>
+<p>To specify using that, the <code>BindingSpec</code> would reference it from the <code>statusCollectors</code> in the relevant <code>DownsyncPolicyClause</code>(s). Following is an example.</p>
 <div class="language-yaml highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">control.kubestellar.io/v1alpha1</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BindingPolicy</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nt">metadata</span><span class="p">:</span>
@@ -3486,8 +3491,7 @@ from <code>DownsyncPolicyClause</code>, <code>NamespaceScopeDownsyncClause</code
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="nt">downsync</span><span class="p">:</span>
 <a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">objectSelectors</span><span class="p">:</span>
 <a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&quot;app.kubernetes.io/name&quot;</span><span class="p p-Indicator">:</span><span class="s">&quot;nginx&quot;</span><span class="p p-Indicator">}</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nt">statusCollection</span><span class="p">:</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">      </span><span class="nt">statusCollectors</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">count-wecs</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nt">statusCollectors</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">count-wecs</span><span class="w"> </span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <p>The analogous SQL statement would look something like the following.</p>
 <div class="language-sql highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">count</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">PerWEC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="o">&lt;</span><span class="n">something</span><span class="o">&gt;</span>
@@ -3738,7 +3742,7 @@ the WDS that was propagated there from a WEC by KubeStellar.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "navigation.indexes", "navigation.tabs", "navigation.path", "navigation.footer", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
         <script src="../../../js/open_in_new_tab.js"></script>
       
