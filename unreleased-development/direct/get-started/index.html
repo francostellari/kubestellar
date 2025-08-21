@@ -6,6 +6,8 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="KubeStellar is a Kubernetes-native multi-cluster delivery system: create once, deploy many. Safely route and synchronize resources across clouds, datacenters, and edge.">
+      
       
       
         <link rel="canonical" href="https://docs.kubestellar.io/unreleased-development/direct/get-started/">
@@ -18,7 +20,7 @@
       
       
       <link rel="icon" href="../../favicons/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
     
     
       
@@ -26,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -75,13 +77,19 @@
     
   
 
+  
+  
+  
+
+  
+
   <!-- The image needs to have an absolute URL -->
   
 
   <!-- Open graph meta tags -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="KubeStellar - Getting Started" />
-  <meta property="og:description" content="None" />
+  <meta property="og:description" content="KubeStellar is a Kubernetes-native multi-cluster delivery system: create once, deploy many. Safely route and synchronize resources across clouds, datacenters, and edge." />
   <meta property="og:url" content="https://docs.kubestellar.io/unreleased-development/direct/get-started/" />
   <meta property="og:image" content="https://docs.kubestellar.io/unreleased-developmentassets/images/illustrations/banner.png" />
   <meta property="og:image:type" content="image/png" />
@@ -259,7 +267,7 @@
         <a href="https://github.com/kubestellar/kubestellar" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -339,10 +347,8 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
+    <li class="md-tabs__item">
       <a href="./" class="md-tabs__link">
         
   
@@ -477,7 +483,7 @@
       <a href="https://github.com/kubestellar/kubestellar" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -827,32 +833,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Getting Started
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="./" class="md-nav__link">
         
   
   
@@ -863,212 +847,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#set-up-a-demo-system" class="md-nav__link">
-    <span class="md-ellipsis">
-      Set Up A Demo System
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Set Up A Demo System">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#note-for-windows-users" class="md-nav__link">
-    <span class="md-ellipsis">
-      Note for Windows users
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#important-shell-variables-for-example-scenarios" class="md-nav__link">
-    <span class="md-ellipsis">
-      Important: Shell Variables for Example Scenarios
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start-using-the-automated-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quick Start Using the Automated Script
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Quick Start Using the Automated Script">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-software-prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      Install software prerequisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-the-script" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run the script
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-by-step-setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      Step by Step Setup
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Step by Step Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#install-software-prerequisites_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Install software prerequisites
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cleanup-from-previous-runs" class="md-nav__link">
-    <span class="md-ellipsis">
-      Cleanup from previous runs
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#set-the-version-appropriately-as-an-environment-variable" class="md-nav__link">
-    <span class="md-ellipsis">
-      Set the Version appropriately as an environment variable
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#create-a-kind-cluster-to-host-kubeflex" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create a kind cluster to host KubeFlex
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#use-core-helm-chart-to-initialize-kubeflex-and-create-its-and-wds" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use Core Helm chart to initialize KubeFlex and create ITS and WDS
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Use Core Helm chart to initialize KubeFlex and create ITS and WDS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wait-for-its-to-be-fully-initialized" class="md-nav__link">
-    <span class="md-ellipsis">
-      Wait for ITS to be fully initialized
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#create-and-register-two-workload-execution-clusters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Create and register two workload execution clusters
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#variables-for-running-the-example-scenarios" class="md-nav__link">
-    <span class="md-ellipsis">
-      Variables for running the example scenarios
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#exercise-kubestellar" class="md-nav__link">
-    <span class="md-ellipsis">
-      Exercise KubeStellar
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Troubleshooting
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2640,6 +2418,8 @@
       
         
       
+        
+      
     
     
     
@@ -2750,6 +2530,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../contribution-guidelines/contributor_ladder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributor Ladder
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../contribution-guidelines/license-inc/" class="md-nav__link">
         
   
@@ -2823,6 +2626,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -2834,10 +2641,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
         
           
-          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
             
   
   
@@ -2850,8 +2657,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
             <span class="md-nav__icon md-icon"></span>
             Website
           </label>
@@ -2870,6 +2677,52 @@
   
   <span class="md-ellipsis">
     Docs Management Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contribution-guidelines/operations/docs-styleguide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Style Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contribution-guidelines/operations/testing-doc-prs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing website PRs
     
   </span>
   
@@ -2912,10 +2765,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_9" >
         
           
-          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_9" id="__nav_5_9_label" tabindex="0">
             
   
   
@@ -2928,8 +2781,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_8">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_9">
             <span class="md-nav__icon md-icon"></span>
             Security
           </label>
@@ -3921,7 +3774,7 @@
 </li>
 </ol>
 <h3 id="note-for-windows-users">Note for Windows users<a class="headerlink" href="#note-for-windows-users" title="Permanent link">#</a></h3>
-<p>For some users on WSL, use of the setup procedure on this page and/or the demo environment creation script may require running as the user <code>root</code> in Linux. There is a <a href="knownissue-wsl-ghcr-helm.md">known issue about this</a>.</p>
+<p>For some users on WSL, use of the setup procedure on this page and/or the demo environment creation script may require running as the user <code>root</code> in Linux. There is a <a href="../knownissue-helm-ghcr/">known issue about this</a>.</p>
 <h3 id="important-shell-variables-for-example-scenarios">Important: Shell Variables for Example Scenarios<a class="headerlink" href="#important-shell-variables-for-example-scenarios" title="Permanent link">#</a></h3>
 <p>After completing the setup, you will need to define several shell variables to run the example scenarios. The meanings of these variables are defined <a href="../example-scenarios/#assumptions-and-variables">at the start of the example scenarios document</a>. What is shown later in this document are the specific values that are correct for the setup procedure described in this guide.</p>
 <p>The key variables you'll need are:</p>
@@ -3939,10 +3792,10 @@
 <h3 id="run-the-script">Run the script<a class="headerlink" href="#run-the-script" title="Permanent link">#</a></h3>
 <p>The script can install KubeStellar's demonstration environment on top of kind or k3d</p>
 <p>For use with kind</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/refs/tags/v0.28.0/scripts/create-kubestellar-demo-env.sh<span class="o">)</span><span class="w"> </span>--platform<span class="w"> </span>kind
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/refs/tags/v0.29.0-alpha.1/scripts/create-kubestellar-demo-env.sh<span class="o">)</span><span class="w"> </span>--platform<span class="w"> </span>kind
 </code></pre></div>
 <p>For use with k3d</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/refs/tags/v0.28.0/scripts/create-kubestellar-demo-env.sh<span class="o">)</span><span class="w"> </span>--platform<span class="w"> </span>k3d
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/refs/tags/v0.29.0-alpha.1/scripts/create-kubestellar-demo-env.sh<span class="o">)</span><span class="w"> </span>--platform<span class="w"> </span>k3d
 </code></pre></div>
 <p>If successful, the script will output the variable definitions that you would use when proceeding to the example scenarios. After successfully running the script, proceed to the <a href="#exercise-kubestellar">Exercise KubeStellar</a> section below.</p>
 <p><em>Note: the script does the same things as described in the <a href="#step-by-step-setup">Step by Step Setup</a> but with a little more concurrency, so it can complete a bit faster. While this is great for getting started quickly with a demo system, you may want to follow the manual setup below to better understand the components and how to create a <a href="#next-steps">configuration that meets your needs</a>.</em></p>
@@ -3951,7 +3804,7 @@
 <p>This walks you through the steps to produce the same configuration as does the script above, suitable for study but not production usage. For general setup information, see <a href="../user-guide-intro/#the-full-story">the full story</a>.</p>
 <h3 id="install-software-prerequisites_1">Install software prerequisites<a class="headerlink" href="#install-software-prerequisites_1" title="Permanent link">#</a></h3>
 <p>The following command will check for the prerequisites that you will need for the later steps. See <a href="../pre-reqs/">the prerequisites doc</a> for more details.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/v0.28.0/scripts/check_pre_req.sh<span class="o">)</span><span class="w"> </span>kflex<span class="w"> </span>ocm<span class="w"> </span>helm<span class="w"> </span>kubectl<span class="w"> </span>docker<span class="w"> </span>kind
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/v0.29.0-alpha.1/scripts/check_pre_req.sh<span class="o">)</span><span class="w"> </span>kflex<span class="w"> </span>ocm<span class="w"> </span>helm<span class="w"> </span>kubectl<span class="w"> </span>docker<span class="w"> </span>kind
 </code></pre></div>
 <p>If that script complains then take it seriously! For example, the following indicates that you have a version of clusteradm that KubeStellar cannot use.</p>
 <div class="language-console highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/v0.27.1/scripts/check_pre_req.sh<span class="o">)</span><span class="w"> </span>kflex<span class="w"> </span>ocm<span class="w"> </span>helm<span class="w"> </span>kubectl<span class="w"> </span>docker<span class="w"> </span>kind
@@ -3978,11 +3831,11 @@ commands tear down the state established by this recipe.</p>
 go unnoticed (the various cleanup commands may legitimately "fail" if
 there is nothing to clean up).</p>
 <h3 id="set-the-version-appropriately-as-an-environment-variable">Set the Version appropriately as an environment variable<a class="headerlink" href="#set-the-version-appropriately-as-an-environment-variable" title="Permanent link">#</a></h3>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">kubestellar_version</span><span class="o">=</span><span class="m">0</span>.28.0
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">kubestellar_version</span><span class="o">=</span><span class="m">0</span>.29.0-alpha.1
 </code></pre></div>
 <h3 id="create-a-kind-cluster-to-host-kubeflex">Create a kind cluster to host KubeFlex<a class="headerlink" href="#create-a-kind-cluster-to-host-kubeflex" title="Permanent link">#</a></h3>
 <p>For convenience, a new local <strong>Kind</strong> cluster that satisfies the requirements for playing the role of KubeFlex hosting cluster can be created with the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/v0.28.0/scripts/create-kind-cluster-with-SSL-passthrough.sh<span class="o">)</span><span class="w"> </span>--name<span class="w"> </span>kubeflex<span class="w"> </span>--port<span class="w"> </span><span class="m">9443</span>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bash<span class="w"> </span>&lt;<span class="o">(</span>curl<span class="w"> </span>-s<span class="w"> </span>https://raw.githubusercontent.com/kubestellar/kubestellar/v0.29.0-alpha.1/scripts/create-kind-cluster-with-SSL-passthrough.sh<span class="o">)</span><span class="w"> </span>--name<span class="w"> </span>kubeflex<span class="w"> </span>--port<span class="w"> </span><span class="m">9443</span>
 </code></pre></div>
 <h3 id="use-core-helm-chart-to-initialize-kubeflex-and-create-its-and-wds">Use Core Helm chart to initialize KubeFlex and create ITS and WDS<a class="headerlink" href="#use-core-helm-chart-to-initialize-kubeflex-and-create-its-and-wds" title="Permanent link">#</a></h3>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>ks-core<span class="w"> </span>oci://ghcr.io/kubestellar/kubestellar/core-chart<span class="w"> </span><span class="se">\</span>
@@ -4000,8 +3853,10 @@ there is nothing to clean up).</p>
 </code></pre></div>
 <h4 id="wait-for-its-to-be-fully-initialized">Wait for ITS to be fully initialized<a class="headerlink" href="#wait-for-its-to-be-fully-initialized" title="Permanent link">#</a></h4>
 <p>The Helm chart above has a Job that initializes the ITS as an OCM "hub" cluster. Helm does not have a way to wait for that initialization to finish. So you have to do the wait yourself. The following commands will do that.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>kind-kubeflex<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>controlplane.tenancy.kflex.kubestellar.org/its1<span class="w"> </span>--for<span class="w"> </span><span class="s1">&#39;jsonpath={.status.postCreateHooks.its-with-clusteradm}=true&#39;</span><span class="w"> </span>--timeout<span class="w"> </span>90s
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>kind-kubeflex<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>-n<span class="w"> </span>its1-system<span class="w"> </span>job.batch/its-with-clusteradm<span class="w"> </span>--for<span class="w"> </span><span class="nv">condition</span><span class="o">=</span>Complete<span class="w"> </span>--timeout<span class="w"> </span>150s
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>kind-kubeflex<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>controlplane.tenancy.kflex.kubestellar.org/its1<span class="w"> </span>--for<span class="w"> </span><span class="s1">&#39;jsonpath={.status.postCreateHooks.its-hub-init}=true&#39;</span><span class="w"> </span>--timeout<span class="w"> </span>90s
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>kind-kubeflex<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>-n<span class="w"> </span>its1-system<span class="w"> </span>job.batch/its-hub-init<span class="w"> </span>--for<span class="w"> </span><span class="nv">condition</span><span class="o">=</span>Complete<span class="w"> </span>--timeout<span class="w"> </span>150s
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>kind-kubeflex<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>controlplane.tenancy.kflex.kubestellar.org/its1<span class="w"> </span>--for<span class="w"> </span><span class="s1">&#39;jsonpath={.status.postCreateHooks.install-status-addon}=true&#39;</span><span class="w"> </span>--timeout<span class="w"> </span>90s
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>kind-kubeflex<span class="w"> </span><span class="nb">wait</span><span class="w"> </span>-n<span class="w"> </span>its1-system<span class="w"> </span>job.batch/install-status-addon<span class="w"> </span>--for<span class="w"> </span><span class="nv">condition</span><span class="o">=</span>Complete<span class="w"> </span>--timeout<span class="w"> </span>150s
 </code></pre></div>
 <p><em>To learn more about the Core Helm Chart, refer to the <a href="../core-chart/">Core Helm Chart documentation</a></em></p>
 <h3 id="create-and-register-two-workload-execution-clusters">Create and register two workload execution clusters<a class="headerlink" href="#create-and-register-two-workload-execution-clusters" title="Permanent link">#</a></h3>
@@ -4029,35 +3884,49 @@ to be registered as a managed cluster on the OCM hub.</p>
 <div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>get<span class="w"> </span>csr
 </code></pre></div>
 <p>until you see that the certificate signing requests (CSR) for both cluster1 and cluster2 exist.
+Sometimes it can take a little while for the CSRs to appear after running the join commands, so if you do not see them immediately, wait a few seconds and try again.
 Note that the CSRs condition is supposed to be <code>Pending</code> until you approve them in step 4.</p>
+<p>For convenience, you can use a shell loop to automatically check every few seconds:</p>
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># This will check every 10 seconds until both CSRs are present</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">while</span><span class="w"> </span>true<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>get<span class="w"> </span>csr
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="c1"># Replace 2 with the number of clusters you are registering if different</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>get<span class="w"> </span>csr<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-c<span class="w"> </span>Pending<span class="k">)</span><span class="w"> </span>-ge<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Both CSRs found.&quot;</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="k">break</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">  </span><span class="k">fi</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Waiting for CSRs to appear...&quot;</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">  </span>sleep<span class="w"> </span><span class="m">10</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">done</span>
+</code></pre></div>
 </li>
 <li>
 <p>Once the CSRs are created, approve the CSRs complete the cluster registration with the command:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>clusteradm<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>accept<span class="w"> </span>--clusters<span class="w"> </span>cluster1
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>clusteradm<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>accept<span class="w"> </span>--clusters<span class="w"> </span>cluster2
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>clusteradm<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>accept<span class="w"> </span>--clusters<span class="w"> </span>cluster1
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>clusteradm<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>accept<span class="w"> </span>--clusters<span class="w"> </span>cluster2
 </code></pre></div>
 </li>
 <li>
 <p>Check the new clusters are in the OCM inventory and label them:</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>get<span class="w"> </span>managedclusters
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>label<span class="w"> </span>managedcluster<span class="w"> </span>cluster1<span class="w"> </span>location-group<span class="o">=</span>edge<span class="w"> </span><span class="nv">name</span><span class="o">=</span>cluster1
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>label<span class="w"> </span>managedcluster<span class="w"> </span>cluster2<span class="w"> </span>location-group<span class="o">=</span>edge<span class="w"> </span><span class="nv">name</span><span class="o">=</span>cluster2
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>get<span class="w"> </span>managedclusters
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>label<span class="w"> </span>managedcluster<span class="w"> </span>cluster1<span class="w"> </span>location-group<span class="o">=</span>edge<span class="w"> </span><span class="nv">name</span><span class="o">=</span>cluster1
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>its1<span class="w"> </span>label<span class="w"> </span>managedcluster<span class="w"> </span>cluster2<span class="w"> </span>location-group<span class="o">=</span>edge<span class="w"> </span><span class="nv">name</span><span class="o">=</span>cluster2
 </code></pre></div>
 </li>
 </ol>
 <h3 id="variables-for-running-the-example-scenarios">Variables for running the example scenarios<a class="headerlink" href="#variables-for-running-the-example-scenarios" title="Permanent link">#</a></h3>
 <p><strong>Important</strong>: Before moving on to try exercising KubeStellar, you will need the following shell variable settings to inform the scenario commands about the configuration.</p>
-<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">host_context</span><span class="o">=</span>kind-kubeflex
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">its_cp</span><span class="o">=</span>its1
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nv">its_context</span><span class="o">=</span>its1
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nv">wds_cp</span><span class="o">=</span>wds1
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nv">wds_context</span><span class="o">=</span>wds1
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nv">wec1_name</span><span class="o">=</span>cluster1
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="nv">wec2_name</span><span class="o">=</span>cluster2
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nv">wec1_context</span><span class="o">=</span><span class="nv">$wec1_name</span>
-<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="nv">wec2_context</span><span class="o">=</span><span class="nv">$wec2_name</span>
-<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="nv">label_query_both</span><span class="o">=</span>location-group<span class="o">=</span>edge
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="nv">label_query_one</span><span class="o">=</span><span class="nv">name</span><span class="o">=</span>cluster1
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nv">host_context</span><span class="o">=</span>kind-kubeflex
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nv">its_cp</span><span class="o">=</span>its1
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nv">its_context</span><span class="o">=</span>its1
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="nv">wds_cp</span><span class="o">=</span>wds1
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nv">wds_context</span><span class="o">=</span>wds1
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="nv">wec1_name</span><span class="o">=</span>cluster1
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="nv">wec2_name</span><span class="o">=</span>cluster2
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="nv">wec1_context</span><span class="o">=</span><span class="nv">$wec1_name</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="nv">wec2_context</span><span class="o">=</span><span class="nv">$wec2_name</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="nv">label_query_both</span><span class="o">=</span>location-group<span class="o">=</span>edge
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="nv">label_query_one</span><span class="o">=</span><span class="nv">name</span><span class="o">=</span>cluster1
 </code></pre></div>
 <p><strong>Note</strong>: These variable values are specific to the setup described in this guide. If you followed a different setup procedure, you will need to adjust these values accordingly.</p>
 <h2 id="exercise-kubestellar">Exercise KubeStellar<a class="headerlink" href="#exercise-kubestellar" title="Permanent link">#</a></h2>
@@ -4225,10 +4094,10 @@ Note that the CSRs condition is supposed to be <code>Pending</code> until you ap
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "navigation.indexes", "navigation.tabs", "navigation.path", "navigation.footer", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "navigation.indexes", "navigation.tabs", "navigation.path", "navigation.footer", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
         <script src="../../js/open_in_new_tab.js"></script>
       
